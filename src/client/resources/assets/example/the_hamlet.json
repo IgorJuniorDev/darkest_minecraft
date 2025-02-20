@@ -1,0 +1,10 @@
+{
+  "example.the_hamlet": {
+    "sounds": [
+      {
+        "name": "example:the_hamlet",
+        "stream": true
+      }
+    ]
+  }
+}

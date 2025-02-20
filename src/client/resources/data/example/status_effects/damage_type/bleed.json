@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:status_effect",
+  "id": "example:bleed_effect",
+  "status": {
+    "category": "harmful",
+    "color": 15324083,
+    "icon": "example:textures/mob_effect/bleed.png"
+  },
+  "effect": {
+    "duration": 0,
+    "amplifier": 0
+  }
+}

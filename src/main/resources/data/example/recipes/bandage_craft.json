@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  G",
+    "GGG",
+    "G  "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:white_wool"
+    }
+  },
+  "result": {
+    "item": "example:bandage_server",
+    "count": 3
+  }
+}

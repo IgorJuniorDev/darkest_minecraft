@@ -1,0 +1,19 @@
+{
+  "effect.example.bleed": "Bleed",
+  "item.example.gold_coin_server": "Gold coin",
+  "item.example.bandage_server": "Bandage",
+  "effect.example.lepsory": "Lepsory",
+  "item.example.lepsory_mask": "Lepsory mask",
+  "item.example.lepsory_chestplate": "Lepsory Chestplate",
+  "entity.minecraft.villager.blacksmith": "Blacksmith",
+  "item.example.lepsory_leggings": "Lepsory Leggings",
+  "item.example.lepsory_boots": "Lepsory Boots",
+  "item.example.leper_sword": "Leper Sword",
+  "effect.example.mark": "Mark",
+  "item.example.crusader_helmet": "Crusader Helmet",
+  "item.example.crusader_chestplate": "Crusader Chestplate",
+  "item.example.crusader_leggings": "Crusader Leggings",
+  "item.example.crusader_boots": "Crusader Boots",
+  "item.example.crusader_sword": "Crusader Sword",
+  "item.example.bag": "Bag"
+}

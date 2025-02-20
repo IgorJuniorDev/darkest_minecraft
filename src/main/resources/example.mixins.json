@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "com.example.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "DeathMixin",
+    "HostileAttackMixin",
+    "MaskMixin",
+    "MixinFightServer",
+    "PlayerClassMixin",
+    "PlayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}

@@ -1,0 +1,22 @@
+
+{
+  "effect.example.bleed": "Кровотечение",
+  "item.example.gold_coin_server": "Золотая монета",
+  "item.example.bandage_server": "Бинт",
+  "effect.example.lepsory": "Проказа",
+  "item.example.lepsory_mask": "Маска прокаженонго",
+  "item.example.lepsory_chestplate": "Нагрудник прокаженного",
+  "entity.minecraft.villager.blacksmith": "Кузнец",
+  "item.example.leper_sword": "Меч прокаженного",
+  "item.example.lepsory_leggings": "Поножи прокаженного",
+  "item.example.lepsory_boots": "Ботинки прокаженного",
+  "effect.example.mark": "Отметка",
+  "item.example.crusader_helmet": "Шлем крестоносца",
+  "item.example.crusader_chestplate": "Нагрудник крестоносца",
+  "item.example.crusader_leggings": "Поножи крестоносца",
+  "item.example.crusader_boots": "Сапоги крестоносца",
+  "item.example.crusader_sword": "Меч крестоносца",
+  "item.example.bag": "Мешок"
+
+
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:status_effect",
+  "description": {
+    "text": "Bleeding Effect"
+  },
+  "ambient": false,
+  "duration": 600,
+  "show_icon": true,
+  "icon": "example:mob_effect/bleed",
+  "effect": {
+    "scaling": "generic",
+    "exhaustion": 0.1,
+    "message_id": "bleed"
+  }
+}
