@@ -3,6 +3,7 @@ package com.example;
 import com.example.armor.ArmorClass;
 import com.example.armor.ArmorMaterialCrusader;
 import com.example.armor.ArmorMaterialLeper;
+import com.example.blocks.BlockOfExcalibur;
 import com.example.class_of_person.CustomClassData;
 import com.example.class_of_person.GiveOfClassesForPlayers;
 import com.example.comands.CustomCommands;
@@ -13,19 +14,20 @@ import com.example.effects.MarkEffect;
 import com.example.items.BagItem;
 import com.example.items.BandageItem;
 import com.example.mixin.PlayerMixin;
-import com.example.weapon.CrusaderSword;
-import com.example.weapon.CustomCrusaderToolMaterial;
-import com.example.weapon.CustomToolMaterial;
-import com.example.weapon.LeperSword;
+import com.example.weapon.*;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.effect.StatusEffectCategory;
@@ -39,7 +41,9 @@ import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TypedActionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +64,7 @@ public class ExampleMod implements ModInitializer {
 	public static final BleedEffectServer effect = new BleedEffectServer(StatusEffectCategory.HARMFUL, 0);
 	public static final LepsoryEffectServer lepsory = new LepsoryEffectServer(StatusEffectCategory.NEUTRAL, 1);
 	public static final CustomCrusaderToolMaterial CUSTOM_CRUSADER_TOOL_MATERIAL = new CustomCrusaderToolMaterial();
+	public static final Excalibur excalibur_tool = new Excalibur();
 
 	// Предметы
 	public static final ArmorClass lepsoru_mask = new ArmorClass(LEPSORY_ARMOR_MATERIAL, ArmorItem.Type.HELMET, new Item.Settings());
@@ -69,6 +74,9 @@ public class ExampleMod implements ModInitializer {
 	public static final LeperSword leper_sword = new LeperSword(LEPSORY_TOOL_MATERIAL, 2, -3.3F, new Item.Settings());
 	public static final BagItem bag = new BagItem(new Item.Settings().maxCount(1));
 	public static final Identifier CLASS_SYNC_PACKET = new Identifier("example", "update_class");
+
+	public static final Excalibur2 excalibur = new Excalibur2(excalibur_tool, 0, -2.5F, new Item.Settings());
+	public static final BlockItem item = new BlockItem(BlockOfExcalibur.blockOfExcalibur, new Item.Settings());
 
 	public static final ArmorClass crusader_helmet = new ArmorClass(armorMaterialCrusader, ArmorItem.Type.HELMET, new Item.Settings());
 	public static final ArmorClass crusader_chestplate = new ArmorClass(armorMaterialCrusader, ArmorItem.Type.CHESTPLATE, new Item.Settings());
@@ -167,8 +175,11 @@ public class ExampleMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		Registry.register(Registries.ITEM, new Identifier("example", "excalibur_on_rocks"), item);
+		BlockOfExcalibur.registerBlocks();
 		Registry.register(Registries.ITEM, new Identifier("example", "bag"), bag);
 		Registry.register(Registries.ITEM, new Identifier("example", "crusader_sword"), crusader_sword);
+		Registry.register(Registries.ITEM, new Identifier("example", "excalibur"), excalibur);
 		Registry.register(Registries.ITEM, new Identifier("example", "crusader_helmet"), crusader_helmet);
 		Registry.register(Registries.ITEM, new Identifier("example", "crusader_chestplate"), crusader_chestplate);
 		Registry.register(Registries.ITEM, new Identifier("example", "crusader_leggings"), crusader_leggings);
@@ -194,6 +205,16 @@ public class ExampleMod implements ModInitializer {
 			entries.add(crusader_leggings);
 			entries.add(crusader_boots);
 			entries.add(crusader_sword);
+		});
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			for (PlayerEntity player : server.getPlayerManager().getPlayerList()) {
+				ItemStack offHandItem = player.getOffHandStack();
+
+				if (!offHandItem.isEmpty() && player.getMainHandStack().getItem() instanceof SwordItem) {
+					player.dropItem(offHandItem, true);
+					player.getInventory().offHand.set(0, ItemStack.EMPTY);
+				}
+			}
 		});
 		ServerTickEvents.START_WORLD_TICK.register(world -> {
 			for (PlayerEntity entity : world.getPlayers())
