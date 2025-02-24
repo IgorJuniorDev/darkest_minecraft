@@ -7,29 +7,23 @@ import com.example.blocks.BlockOfExcalibur;
 import com.example.class_of_person.CustomClassData;
 import com.example.class_of_person.GiveOfClassesForPlayers;
 import com.example.comands.CustomCommands;
-import com.example.comands.RandomHostileMob;
 import com.example.effects.BleedEffectServer;
 import com.example.effects.LepsoryEffectServer;
 import com.example.effects.MarkEffect;
 import com.example.items.BagItem;
 import com.example.items.BandageItem;
-import com.example.mixin.PlayerMixin;
+import com.example.structures.ChurchStructure;
 import com.example.weapon.*;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -38,12 +32,17 @@ import net.minecraft.item.*;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.placementmodifier.CountPlacementModifier;
+import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +76,9 @@ public class ExampleMod implements ModInitializer {
 
 	public static final Excalibur2 excalibur = new Excalibur2(excalibur_tool, 0, -2.5F, new Item.Settings());
 	public static final BlockItem item = new BlockItem(BlockOfExcalibur.blockOfExcalibur, new Item.Settings());
+
+	public static final Feature<DefaultFeatureConfig> churchStructure = new ChurchStructure(DefaultFeatureConfig.CODEC);
+
 
 	public static final ArmorClass crusader_helmet = new ArmorClass(armorMaterialCrusader, ArmorItem.Type.HELMET, new Item.Settings());
 	public static final ArmorClass crusader_chestplate = new ArmorClass(armorMaterialCrusader, ArmorItem.Type.CHESTPLATE, new Item.Settings());
@@ -177,6 +179,7 @@ public class ExampleMod implements ModInitializer {
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, new Identifier("example", "excalibur_on_rocks"), item);
 		BlockOfExcalibur.registerBlocks();
+		Registry.register(Registries.FEATURE, new Identifier("example", "church"), churchStructure);
 		Registry.register(Registries.ITEM, new Identifier("example", "bag"), bag);
 		Registry.register(Registries.ITEM, new Identifier("example", "crusader_sword"), crusader_sword);
 		Registry.register(Registries.ITEM, new Identifier("example", "excalibur"), excalibur);
