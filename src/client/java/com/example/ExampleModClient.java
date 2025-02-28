@@ -2,15 +2,19 @@ package com.example;
 
 import com.example.class_of_person.CustomClassData;
 import com.example.models.KnightHelmet;
+import com.example.models.ModModelLayers;
+import com.example.models.SkeletonModel;
+import com.example.models.SkeletonRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.model.*;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -30,8 +34,9 @@ public class ExampleModClient implements ClientModInitializer {
 		registerPackets();
 		ArmorRenderer.register(new KnightHelmet(root), ExampleMod.crusader_helmet
 		);
-		EntityModelLayerRegistry.registerModelLayer(KnightHelmet.LAYER_LOCATION, KnightHelmet::getTexturedModelData);
-		HudRenderCallback.EVENT.register(ExampleModClient::renderCounter);
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.layer, SkeletonModel::getTexturedModelData);
+        EntityRendererRegistry.register(ExampleMod.angry_skeleton, SkeletonRenderer::new);
+        HudRenderCallback.EVENT.register(ExampleModClient::renderCounter);
 
 	}
 	private void registerPackets() {
@@ -51,7 +56,6 @@ public class ExampleModClient implements ClientModInitializer {
             client.execute(() -> {
                 if (client.player instanceof CustomClassData player) {
                     player.setCustomClass(classOfPerson);
-                    System.out.println("Класс установлен на клиенте: " + player.getCustomClass());
                 }
             });
         });

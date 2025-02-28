@@ -10,6 +10,7 @@ import com.example.comands.CustomCommands;
 import com.example.effects.BleedEffectServer;
 import com.example.effects.LepsoryEffectServer;
 import com.example.effects.MarkEffect;
+import com.example.entity.AngrySkeleton;
 import com.example.items.BagItem;
 import com.example.items.BandageItem;
 import com.example.structures.ChurchStructure;
@@ -22,6 +23,11 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -38,6 +44,7 @@ import net.minecraft.world.gen.feature.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.util.*;
 
 public class ExampleMod implements ModInitializer {
@@ -48,6 +55,7 @@ public class ExampleMod implements ModInitializer {
 	public static final ArmorMaterialLeper LEPSORY_ARMOR_MATERIAL = new ArmorMaterialLeper();
 	public static final CustomToolMaterial LEPSORY_TOOL_MATERIAL = new CustomToolMaterial();
 	public static final ArmorMaterialCrusader armorMaterialCrusader = new ArmorMaterialCrusader();
+	public static final SwordOfJusticeMaterial material = new SwordOfJusticeMaterial();
 	public  static Item goldCoin = new Item((new Item.Settings()));
 	public static Item bandageItem = new BandageItem((new Item.Settings()));
 	// Эффекты
@@ -57,12 +65,15 @@ public class ExampleMod implements ModInitializer {
 	public static final CustomCrusaderToolMaterial CUSTOM_CRUSADER_TOOL_MATERIAL = new CustomCrusaderToolMaterial();
 	public static final Excalibur excalibur_tool = new Excalibur();
 
+	public static final EntityType<AngrySkeleton> angry_skeleton = Registry.register(Registries.ENTITY_TYPE, new Identifier("example", "skeleton"), FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, AngrySkeleton::new).dimensions(EntityDimensions.fixed(1f, 2f)).build());
+
 	// Предметы
 	public static final ArmorClass lepsoru_mask = new ArmorClass(LEPSORY_ARMOR_MATERIAL, ArmorItem.Type.HELMET, new Item.Settings());
 	public static final ArmorClass lepsoru_chestplate = new ArmorClass(LEPSORY_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE, new Item.Settings());
 	public static final ArmorClass lepsoru_leggings = new ArmorClass(LEPSORY_ARMOR_MATERIAL, ArmorItem.Type.LEGGINGS, new Item.Settings());
 	public static final ArmorClass lepsoru_boots = new ArmorClass(LEPSORY_ARMOR_MATERIAL, ArmorItem.Type.BOOTS, new Item.Settings());
 	public static final LeperSword leper_sword = new LeperSword(LEPSORY_TOOL_MATERIAL, 2, -3.3F, new Item.Settings());
+	public static final SwordOfJustice sword_of_justice = new SwordOfJustice(material, 2, -3.0F, new Item.Settings());
 	public static final BagItem bag = new BagItem(new Item.Settings().maxCount(1));
 	public static final Identifier CLASS_SYNC_PACKET = new Identifier("example", "update_class");
 
@@ -189,6 +200,8 @@ public class ExampleMod implements ModInitializer {
 		Registry.register(Registries.STATUS_EFFECT, new Identifier("example", "bleed"), effect);
 		Registry.register(Registries.STATUS_EFFECT, new Identifier("example", "mark"), markEffect);
 		Registry.register(Registries.STATUS_EFFECT, new Identifier("example", "lepsory"), lepsory);
+		Registry.register(Registries.ITEM, new Identifier("example", "sword_of_justice"), sword_of_justice);
+
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register(entries -> {
 			entries.add(leper_sword);
 			entries.add(lepsoru_mask);
@@ -200,7 +213,10 @@ public class ExampleMod implements ModInitializer {
 			entries.add(crusader_leggings);
 			entries.add(crusader_boots);
 			entries.add(crusader_sword);
+			entries.add(sword_of_justice);
+			entries.add(excalibur);
 		});
+		FabricDefaultAttributeRegistry.register(ExampleMod.angry_skeleton, AngrySkeleton.angrySkeleton());
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			for (PlayerEntity player : server.getPlayerManager().getPlayerList()) {
 				ItemStack offHandItem = player.getOffHandStack();
@@ -208,6 +224,18 @@ public class ExampleMod implements ModInitializer {
 				if (!offHandItem.isEmpty() && player.getMainHandStack().getItem() instanceof SwordItem) {
 					player.dropItem(offHandItem, true);
 					player.getInventory().offHand.set(0, ItemStack.EMPTY);
+				}
+			}
+		});
+		ServerTickEvents.END_WORLD_TICK.register(server -> {
+			for (PlayerEntity player : server.getPlayers()) {
+				if (player instanceof CustomClassData data && data.getCustomClass().equals("crusader") && player.getMainHandStack().getItem().equals(excalibur)) {
+					player.addStatusEffect(new StatusEffectInstance(StatusEffects.HEALTH_BOOST, StatusEffectInstance.INFINITE, 0));
+					player.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, StatusEffectInstance.INFINITE, 0));
+				}
+				else {
+					player.removeStatusEffect(StatusEffects.HEALTH_BOOST);
+					player.removeStatusEffect(StatusEffects.STRENGTH);
 				}
 			}
 		});

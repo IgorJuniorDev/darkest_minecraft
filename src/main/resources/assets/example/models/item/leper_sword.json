@@ -250,9 +250,9 @@
 			"scale": [2, 2, 2]
 		},
 		"firstperson_righthand": {
-			"rotation": [-14, 0, 28],
-			"translation": [0.75, 8.5, -1.25],
-			"scale": [2, 2, 2]
+			"rotation": [-14, -43, 28],
+			"translation": [-6.75, 13.75, -1],
+			"scale": [2, 3.3, 2]
 		},
 		"firstperson_lefthand": {
 			"rotation": [139, 0, 0],

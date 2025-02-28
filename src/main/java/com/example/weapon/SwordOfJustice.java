@@ -6,15 +6,16 @@ import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.nbt.NbtCompound;
 
-public class LeperSword extends AxeItem {
-    public LeperSword(ToolMaterial toolMaterial, int attackDamage, float attackSpeed, Settings settings) {
+
+public class SwordOfJustice extends AxeItem {
+    public SwordOfJustice(ToolMaterial toolMaterial, int attackDamage, float attackSpeed, Settings settings) {
         super(toolMaterial, attackDamage, attackSpeed, settings);
     }
 
     @Override
     public float getAttackDamage()
     {
-        return 7.0F;
+        return 10F;
     }
 
     @Override
@@ -24,5 +25,4 @@ public class LeperSword extends AxeItem {
         nbt.putBoolean("Unbreakable", true);
         return stack;
     }
-
 }

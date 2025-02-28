@@ -14,6 +14,9 @@ repositories {
 	maven {
 		url 'https://maven.fabricmc.net/'
 	}
+	flatDir{
+		dirs 'libs'
+	}
 	mavenCentral()
 }
 
@@ -33,6 +36,12 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modImplementation files('libs/player-animation-lib-fabric-1.0.2-rc1+1.20.jar')
+	include files('libs/player-animation-lib-fabric-1.0.2-rc1+1.20.jar')
+	modImplementation files('libs/bettercombat-fabric-1.8.6+1.20.1.jar')
+	include files('libs/bettercombat-fabric-1.8.6+1.20.1.jar')
+	modImplementation files('libs/cloth-config-11.1.136-fabric.jar')
+	include files('libs/cloth-config-11.1.136-fabric.jar')
 }
 
 processResources {
