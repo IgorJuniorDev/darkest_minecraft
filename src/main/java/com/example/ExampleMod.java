@@ -14,6 +14,7 @@ import com.example.entity.AngrySkeleton;
 import com.example.items.BagItem;
 import com.example.items.BandageItem;
 import com.example.structures.ChurchStructure;
+import com.example.structures.ForgeStructure;
 import com.example.weapon.*;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
@@ -44,7 +45,6 @@ import net.minecraft.world.gen.feature.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.util.*;
 
 public class ExampleMod implements ModInitializer {
@@ -77,10 +77,11 @@ public class ExampleMod implements ModInitializer {
 	public static final BagItem bag = new BagItem(new Item.Settings().maxCount(1));
 	public static final Identifier CLASS_SYNC_PACKET = new Identifier("example", "update_class");
 
-	public static final Excalibur2 excalibur = new Excalibur2(excalibur_tool, 0, -2.5F, new Item.Settings());
+	public static final ExcaliburSword excalibur = new ExcaliburSword(excalibur_tool, 1, -2.0F, new Item.Settings());
 	public static final BlockItem item = new BlockItem(BlockOfExcalibur.blockOfExcalibur, new Item.Settings());
 
-	public static final Feature<DefaultFeatureConfig> churchStructure = new ChurchStructure(DefaultFeatureConfig.CODEC);
+	public static final ChurchStructure churchStructure = new ChurchStructure(DefaultFeatureConfig.CODEC);
+	public static final ForgeStructure forgeStructure = new ForgeStructure(DefaultFeatureConfig.CODEC);
 
 
 	public static final ArmorClass crusader_helmet = new ArmorClass(armorMaterialCrusader, ArmorItem.Type.HELMET, new Item.Settings());
@@ -180,8 +181,9 @@ public class ExampleMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, new Identifier("example", "excalibur_on_rocks"), item);
 		BlockOfExcalibur.registerBlocks();
+		Registry.register(Registries.ITEM, new Identifier("example", "excalibur_on_rocks"), item);
+		Registry.register(Registries.FEATURE, new Identifier("example", "forge"), forgeStructure);
 		Registry.register(Registries.FEATURE, new Identifier("example", "church"), churchStructure);
 		Registry.register(Registries.ITEM, new Identifier("example", "bag"), bag);
 		Registry.register(Registries.ITEM, new Identifier("example", "crusader_sword"), crusader_sword);
@@ -227,7 +229,7 @@ public class ExampleMod implements ModInitializer {
 				}
 			}
 		});
-		ServerTickEvents.END_WORLD_TICK.register(server -> {
+		ServerTickEvents.START_WORLD_TICK.register(server -> {
 			for (PlayerEntity player : server.getPlayers()) {
 				if (player instanceof CustomClassData data && data.getCustomClass().equals("crusader") && player.getMainHandStack().getItem().equals(excalibur)) {
 					player.addStatusEffect(new StatusEffectInstance(StatusEffects.HEALTH_BOOST, StatusEffectInstance.INFINITE, 0));
